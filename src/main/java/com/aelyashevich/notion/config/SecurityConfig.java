@@ -23,6 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final TokenFilter tokenFilter;
+    private final CorsConfig corsConfig;
 
     @Bean
     public SecurityFilterChain httpSecurity(final HttpSecurity http) throws Exception {
@@ -33,7 +34,7 @@ public class SecurityConfig {
                                 .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(this.corsConfig))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(this.tokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
