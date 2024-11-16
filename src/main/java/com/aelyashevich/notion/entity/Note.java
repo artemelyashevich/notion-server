@@ -37,7 +37,7 @@ public class Note {
     private String content;
 
     @DBRef
-    private String userId;
+    private User user;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
@@ -55,7 +55,7 @@ public class Note {
         sb.append("id='").append(id).append('\'');
         sb.append(", title='").append(title).append('\'');
         sb.append(", content='").append(content).append('\'');
-        sb.append(", userId='").append(userId).append('\'');
+        sb.append(", userId='").append(user.getId()).append('\'');
         sb.append(", createdAt=").append(createdAt);
         sb.append(", updatedAt=").append(updatedAt);
         sb.append('}');

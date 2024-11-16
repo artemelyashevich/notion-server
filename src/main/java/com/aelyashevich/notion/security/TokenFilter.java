@@ -33,11 +33,15 @@ public class TokenFilter extends OncePerRequestFilter {
             return;
         }
         var jwt = authHeader.substring(BEARER_PREFIX.length());
-        var email = JwtUtil.extractEmailClaims(jwt);
-        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        var id = JwtUtil.extractId(jwt);
+        if (id == null) {
+            filterChain.doFilter(request, response);
+        }
+        request.setAttribute("id", id);
+        if (id != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             SecurityContext context = SecurityContextHolder.createEmptyContext();
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                    email,
+                    id,
                     null,
                     null
             );

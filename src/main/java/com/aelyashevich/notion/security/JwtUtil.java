@@ -15,7 +15,7 @@ public class JwtUtil {
 
     private final Long TOKEN_LIFETIME = 86_400_000L;
 
-    public static String extractEmailClaims(final String token) {
+    public static String extractId(final String token){
         return getClaimsFromToken(token).getSubject();
     }
 
@@ -42,10 +42,7 @@ public class JwtUtil {
         var expirationDate = new Date(issuedAt.getTime() + TOKEN_LIFETIME);
 
         return Jwts.builder()
-                .setClaims(
-                        Map.of("id", user.getId())
-                )
-                .setSubject(user.getEmail())
+                .setSubject(user.getId())
                 .setIssuedAt(issuedAt)
                 .setExpiration(expirationDate)
                 .signWith(Keys.hmacShaKeyFor(secret.getBytes()), SignatureAlgorithm.HS256)

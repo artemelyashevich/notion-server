@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface CrudService<T> {
 
-    List<T> findAll();
+    List<T> findAll(final String id);
 
     T findById(final String id);
 

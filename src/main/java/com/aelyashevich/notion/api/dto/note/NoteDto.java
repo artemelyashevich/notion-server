@@ -13,7 +13,6 @@ public record NoteDto(
         @NotNull(message = "Content must be not nell.")
         String content,
 
-        @NotNull(message = "UserId must be not nell.")
         String userId,
 
         LocalDateTime createdAt,

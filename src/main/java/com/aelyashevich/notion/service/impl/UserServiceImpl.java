@@ -6,12 +6,10 @@ import com.aelyashevich.notion.exception.ResourceNotFoundException;
 import com.aelyashevich.notion.repository.UserRepository;
 import com.aelyashevich.notion.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +18,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public List<User> findAll() {
+    public List<User> findAll(String id) {
         return this.userRepository.findAll();
     }
 

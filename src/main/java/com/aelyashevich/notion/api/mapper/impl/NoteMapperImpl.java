@@ -15,7 +15,6 @@ public class NoteMapperImpl implements NoteMapper {
         return Note.builder()
                 .title(dto.title())
                 .content(dto.content())
-                .userId(dto.userId())
                 .createdAt(dto.createdAt())
                 .updatedAt(dto.updatedAt())
                 .build();
@@ -27,7 +26,7 @@ public class NoteMapperImpl implements NoteMapper {
                 entity.getId(),
                 entity.getTitle(),
                 entity.getContent(),
-                entity.getUserId(),
+                entity.getUser().getId(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );

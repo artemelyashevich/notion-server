@@ -4,6 +4,7 @@ import com.aelyashevich.notion.entity.Note;
 import com.aelyashevich.notion.exception.ResourceNotFoundException;
 import com.aelyashevich.notion.repository.NoteRepository;
 import com.aelyashevich.notion.service.NoteService;
+import com.aelyashevich.notion.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,11 +16,7 @@ import java.util.List;
 public class NoteServiceImpl implements NoteService {
 
     private final NoteRepository noteRepository;
-
-    @Override
-    public List<Note> findAll() {
-        return this.noteRepository.findAll();
-    }
+    private final UserService userService;
 
     @Override
     public Note findById(final String id) {
@@ -27,8 +24,10 @@ public class NoteServiceImpl implements NoteService {
                 .orElseThrow(() -> new ResourceNotFoundException("Note with id '%s' was not found".formatted(id)));
     }
 
+    @Transactional
     @Override
-    public Note create(final Note entity) {
+    public Note create(final Note entity, final String id) {
+        entity.setUser(this.userService.findById(id));
         return this.noteRepository.save(entity);
     }
 
@@ -50,6 +49,6 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public List<Note> findByUserId(final String userId) {
-        return this.noteRepository.findByUserId(userId);
+        return this.noteRepository.findAllByUser(this.userService.findById(userId));
     }
 }

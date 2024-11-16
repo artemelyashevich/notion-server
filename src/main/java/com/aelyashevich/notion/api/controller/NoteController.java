@@ -6,15 +6,8 @@ import com.aelyashevich.notion.service.NoteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,40 +20,43 @@ public class NoteController {
     private final NoteMapper noteMapper;
 
     @GetMapping
-    public List<NoteDto> findAll() {
-        var notes = this.noteService.findAll();
+    @PreAuthorize("#id == authentication.principal")
+    public List<NoteDto> findAll(final @RequestAttribute("id") String id) {
+        var notes = this.noteService.findByUserId(id);
+        System.out.println(notes);
         return this.noteMapper.toDto(notes);
     }
 
     @GetMapping("/{id}")
-    public NoteDto findById(final @PathVariable("id") String noteId) {
+    @PreAuthorize("#id == authentication.principal")
+    public NoteDto findById(final @PathVariable("id") String noteId, final @RequestAttribute("id") String id) {
         var note = this.noteService.findById(noteId);
         return this.noteMapper.toDto(note);
     }
 
-    @GetMapping("/user/{id}")
-    public List<NoteDto> findByUserId(final @PathVariable("id") String userId) {
-        var notes = this.noteService.findByUserId(userId);
-        return this.noteMapper.toDto(notes);
-    }
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public NoteDto create(final @Valid @RequestBody NoteDto dto) {
-        var note = this.noteService.create(this.noteMapper.toEntity(dto));
+    public NoteDto create(final @Valid @RequestBody NoteDto dto, final @RequestAttribute("id") String id) {
+        var note = this.noteService.create(this.noteMapper.toEntity(dto), id);
         return this.noteMapper.toDto(note);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.CREATED)
-    public NoteDto update(final @PathVariable("id") String noteId, final @Valid @RequestBody NoteDto dto) {
+    @PreAuthorize("#id == authentication.principal")
+    public NoteDto update(
+            final @PathVariable("id") String noteId,
+            final @Valid @RequestBody NoteDto dto,
+            final @RequestAttribute("id") String id
+    ) {
         var note = this.noteService.update(noteId, this.noteMapper.toEntity(dto));
         return this.noteMapper.toDto(note);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(final @PathVariable("id") String noteId) {
+    @PreAuthorize("#id == authentication.principal")
+    public void delete(final @PathVariable("id") String noteId, final @RequestAttribute("id") String id) {
         this.noteService.delete(noteId);
     }
 }
