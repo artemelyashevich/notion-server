@@ -2,6 +2,8 @@ package com.aelyashevich.notion.service.impl;
 
 import com.aelyashevich.notion.api.dto.auth.AuthRequestDto;
 import com.aelyashevich.notion.entity.User;
+import com.aelyashevich.notion.exception.InvalidPasswordException;
+import com.aelyashevich.notion.security.JwtUtil;
 import com.aelyashevich.notion.service.AuthService;
 import com.aelyashevich.notion.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -20,31 +22,29 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public String login(final AuthRequestDto dto) {
         var user = this.userService.findByEmail(dto.email());
-        if (this.passwordEncoder.matches(dto.password(), user.getPassword())) {
-            return "login";
+        if (!this.passwordEncoder.matches(dto.password(), user.getPassword())) {
+            throw new InvalidPasswordException("Password mismatch.");
         }
-        return "forbidden";
+        return generateToken(user);
     }
 
     @Override
     public String register(final AuthRequestDto dto) {
-        // TODO: Add refresh token
         var user = this.userService.create(
                 User.builder()
                         .email(dto.email())
                         .password(this.passwordEncoder.encode(dto.password()))
                         .build()
         );
-        return "register";
+        return generateToken(user);
     }
 
     @Override
     public Boolean checkIfTokenIsValid(final String accessToken) {
-        return null;
+        return JwtUtil.validate(accessToken);
     }
 
-    @Override
-    public String refreshToken(final String accessToken) {
-        return null;
+    private static String generateToken(final User user) {
+        return JwtUtil.generateToken(user);
     }
 }

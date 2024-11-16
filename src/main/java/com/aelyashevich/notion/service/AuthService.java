@@ -9,6 +9,4 @@ public interface AuthService {
     String register(final AuthRequestDto dto);
 
     Boolean checkIfTokenIsValid(final String accessToken);
-
-    String refreshToken(final String accessToken);
 }
