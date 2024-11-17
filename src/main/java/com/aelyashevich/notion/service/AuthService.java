@@ -8,5 +8,5 @@ public interface AuthService {
 
     String register(final AuthRequestDto dto);
 
-    Boolean checkIfTokenIsValid(final String accessToken);
+    void checkIfTokenIsValid(final String accessToken);
 }

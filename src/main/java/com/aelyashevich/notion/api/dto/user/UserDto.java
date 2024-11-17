@@ -37,7 +37,6 @@ public class UserDto {
                 final StringBuilder sb = new StringBuilder("UserDto{");
                 sb.append("id='").append(id).append('\'');
                 sb.append(", email='").append(email).append('\'');
-                sb.append(", password='").append(password).append('\'');
                 sb.append(", createdAt=").append(createdAt);
                 sb.append(", updatedAt=").append(updatedAt);
                 sb.append('}');

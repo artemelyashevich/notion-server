@@ -26,6 +26,12 @@ public class UserController {
         return this.userMapper.toDto(user);
     }
 
+    @GetMapping("/current")
+    public UserDto findCurrentUser(final @RequestAttribute("id") String id) {
+        var user = this.userService.findById(id);
+        return this.userMapper.toDto(user);
+    }
+
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("#id == authentication.principal")

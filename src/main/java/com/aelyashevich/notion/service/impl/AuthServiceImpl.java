@@ -2,6 +2,7 @@ package com.aelyashevich.notion.service.impl;
 
 import com.aelyashevich.notion.api.dto.auth.AuthRequestDto;
 import com.aelyashevich.notion.entity.User;
+import com.aelyashevich.notion.exception.InvalidJWTTokenException;
 import com.aelyashevich.notion.exception.InvalidPasswordException;
 import com.aelyashevich.notion.security.JwtUtil;
 import com.aelyashevich.notion.service.AuthService;
@@ -40,8 +41,10 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Boolean checkIfTokenIsValid(final String accessToken) {
-        return JwtUtil.validate(accessToken);
+    public void checkIfTokenIsValid(final String accessToken) {
+        if (!JwtUtil.validate(accessToken)) {
+            throw new InvalidJWTTokenException("Token expired.");
+        }
     }
 
     private static String generateToken(final User user) {
