@@ -23,7 +23,6 @@ public class NoteController {
     @PreAuthorize("#id == authentication.principal")
     public List<NoteDto> findAll(final @RequestAttribute("id") String id) {
         var notes = this.noteService.findByUserId(id);
-        System.out.println(notes);
         return this.noteMapper.toDto(notes);
     }
 
